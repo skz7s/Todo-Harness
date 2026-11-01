@@ -4,7 +4,7 @@
 
 Todo Harness 是基于 DeepSeek Harness 定制的待办智能秘书。它把交办事项从聊天记录中提取出来，存入跨会话共享的任务清单，并通过专门的任务看板持续跟进，帮助你减少全局任务遗漏和遗忘。
 
-![Todo Harness 完整应用界面，包含工作区与会话列表、对话区和虚构待办看板](docs/todo-harness-demo.png)
+![Todo Harness 完整应用界面，包含工作区与会话列表、对话区和虚构待办看板](https://raw.githubusercontent.com/skz7s/Todo-Harness/main/docs/todo-harness-demo.png)
 
 *完整应用界面示例，任务数据为虚构内容。*
 

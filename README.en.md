@@ -4,7 +4,7 @@
 
 Todo Harness is a todo-focused executive assistant built on a customized DeepSeek Harness. It turns assigned work into a persistent task list shared across conversations, then follows progress in a dedicated task board to reduce forgotten tasks and work lost in chat history.
 
-![Full Todo Harness application with workspace and session navigation, conversation area, and fictional todo board](docs/todo-harness-demo.png)
+![Full Todo Harness application with workspace and session navigation, conversation area, and fictional todo board](https://raw.githubusercontent.com/skz7s/Todo-Harness/main/docs/todo-harness-demo.png)
 
 *Full application view; all task data is fictional.*
 
