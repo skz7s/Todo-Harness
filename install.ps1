@@ -11,12 +11,12 @@ function Get-NodeMajorVersion {
   $Node = Get-Command node.exe -ErrorAction SilentlyContinue
   if (-not $Node) { return 0 }
 
-  $Version = & $Node.Source -p 'Number(process.versions.node.split(".")[0])'
+  $Version = & $Node.Source --version
   if ($LASTEXITCODE -ne 0) { return 0 }
 
-  $Major = 0
-  if (-not [int]::TryParse(($Version | Out-String).Trim(), [ref]$Major)) { return 0 }
-  return $Major
+  $Match = [regex]::Match(($Version | Out-String).Trim(), '^v?(\d+)')
+  if (-not $Match.Success) { return 0 }
+  return [int] $Match.Groups[1].Value
 }
 
 function Install-WingetPackage([string] $Id, [switch] $Force) {
