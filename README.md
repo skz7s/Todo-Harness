@@ -10,7 +10,7 @@ Todo Harness 是基于 DeepSeek Harness 定制的待办智能秘书。它把交�
 
 ### 一键安装
 
-需要 Git、Node.js 20 或更高版本，以及 npm。安装器会将程序安装到用户目录、安装运行依赖并启动服务；首次启动时会自动打开本地 Harness 页面。
+安装器会将程序安装到用户目录、安装运行依赖并启动服务；首次启动时会自动打开本地 Harness 页面。macOS / Linux 需要预先安装 Git、Node.js 20 或更高版本，以及 npm。Windows 安装器会通过 `winget` 自动安装缺失的 Git 或 Node.js LTS（包含 npm）；需要 Windows 的 App Installer 提供 `winget`，安装系统级组件时可能会弹出授权提示。
 
 macOS / Linux：
 

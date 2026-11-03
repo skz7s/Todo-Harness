@@ -10,7 +10,7 @@ Todo Harness is a todo-focused executive assistant built on a customized DeepSee
 
 ## One-click installation
 
-Git, Node.js 20 or newer, and npm are required. The installer places the app in your user directory, installs runtime dependencies, and starts the service. The local Harness page opens on first launch.
+The installer places the app in your user directory, installs runtime dependencies, and starts the service. macOS and Linux require Git, Node.js 20 or newer, and npm to be installed first. On Windows, the PowerShell installer uses `winget` to install missing Git or Node.js LTS (which includes npm); `winget` is provided by Windows App Installer, and Windows may show an authorization prompt for system-level installs.
 
 macOS / Linux:
 

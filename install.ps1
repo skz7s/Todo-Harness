@@ -7,15 +7,71 @@ $InstallDir = if ($env:TODO_HARNESS_INSTALL_DIR) {
   Join-Path $env:LOCALAPPDATA "TodoHarness\app"
 }
 
-foreach ($Command in @("git", "node", "npm")) {
-  if (-not (Get-Command $Command -ErrorAction SilentlyContinue)) {
-    throw "Todo Harness requires Git and Node.js 20 or newer (including npm). Install the missing prerequisite and run this command again."
+function Get-NodeMajorVersion {
+  $Node = Get-Command node.exe -ErrorAction SilentlyContinue
+  if (-not $Node) { return 0 }
+
+  $Version = & $Node.Source -p 'Number(process.versions.node.split(".")[0])'
+  if ($LASTEXITCODE -ne 0) { return 0 }
+
+  $Major = 0
+  if (-not [int]::TryParse(($Version | Out-String).Trim(), [ref]$Major)) { return 0 }
+  return $Major
+}
+
+function Install-WingetPackage([string] $Id, [switch] $Force) {
+  $Arguments = @(
+    "install", "--id", $Id, "--exact", "--source", "winget",
+    "--silent", "--accept-package-agreements", "--accept-source-agreements"
+  )
+  if ($Force) { $Arguments += "--force" }
+
+  Write-Host "Installing $Id with winget..."
+  & $script:Winget.Source @Arguments
+  if ($LASTEXITCODE -ne 0) {
+    throw "winget could not install $Id (exit code $LASTEXITCODE)."
   }
 }
 
-$NodeMajor = [int] ((node.exe -p 'Number(process.versions.node.split(".")[0])').Trim())
+function Refresh-ProcessPath {
+  $KnownPaths = @(
+    (Join-Path $env:ProgramFiles "Git\cmd"),
+    (Join-Path $env:ProgramFiles "nodejs"),
+    (Join-Path $env:LOCALAPPDATA "Programs\Git\cmd"),
+    (Join-Path $env:LOCALAPPDATA "Programs\nodejs")
+  )
+  $EnvironmentPaths = @(
+    [Environment]::GetEnvironmentVariable("Path", "Machine"),
+    [Environment]::GetEnvironmentVariable("Path", "User"),
+    $env:Path
+  )
+  $env:Path = (@($KnownPaths | Where-Object { Test-Path $_ }) + $EnvironmentPaths) -join ";"
+}
+
+$NeedGit = -not (Get-Command git -ErrorAction SilentlyContinue)
+$NeedNode = (Get-NodeMajorVersion) -lt 20 -or -not (Get-Command npm.cmd -ErrorAction SilentlyContinue)
+
+if ($NeedGit -or $NeedNode) {
+  $script:Winget = Get-Command winget.exe -ErrorAction SilentlyContinue
+  if (-not $script:Winget) {
+    throw "Todo Harness can install Git and Node.js automatically, but winget is unavailable. Install App Installer (which provides winget) and run this command again."
+  }
+
+  if ($NeedGit) { Install-WingetPackage "Git.Git" }
+  if ($NeedNode) { Install-WingetPackage "OpenJS.NodeJS.LTS" -Force }
+  Refresh-ProcessPath
+}
+
+if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+  throw "Git is still unavailable after installation. Open a new PowerShell window and run this command again."
+}
+if (-not (Get-Command node.exe -ErrorAction SilentlyContinue) -or -not (Get-Command npm.cmd -ErrorAction SilentlyContinue)) {
+  throw "Node.js 20 or newer with npm is still unavailable after installation. Open a new PowerShell window and run this command again."
+}
+
+$NodeMajor = Get-NodeMajorVersion
 if ($NodeMajor -lt 20) {
-  throw "Node.js 20 or newer is required. Found $(node --version)."
+  throw "Node.js 20 or newer is required after installation. Found $(node.exe --version)."
 }
 
 $Parent = Split-Path -Parent $InstallDir
